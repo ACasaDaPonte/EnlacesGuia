@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enlaces · A Casa da Ponte</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    color: #2d3748;
+    padding: 24px 16px 60px;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    display: block;
+    margin: 0 auto 14px;
+    width: 110px;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 20px;
+    color: #1a202c;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .subtitulo {
+    font-size: 13px;
+    color: #718096;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto 28px;
+    line-height: 1.5;
+  }
+
+  .categoria {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .cabecera-cat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #1a202c;
+    background: #f7fafc;
+  }
+
+  .cabecera-cat .icono { color: #718096; font-size: 12px; transition: transform 0.15s ease; }
+  .categoria.abierta .icono { transform: rotate(180deg); }
+
+  .lista {
+    display: none;
+    padding: 6px 10px 10px;
+  }
+
+  .categoria.abierta .lista { display: block; }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px;
+    border-bottom: 1px solid #edf2f7;
+  }
+
+  .item:last-child { border-bottom: none; }
+
+  .info-item {
+    min-width: 0;
+  }
+
+  .nombre-item {
+    font-size: 14px;
+    color: #2d3748;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .lugar-item {
+    font-size: 11.5px;
+    color: #a0aec0;
+  }
+
+  .btn-ir {
+    flex-shrink: 0;
+    display: inline-block;
+    background: #2980b9;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .btn-ir:hover { background: #21618c; }
+
+  .selector-idioma {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .btn-idioma {
+    border: 1px solid #cbd5e0;
+    background: #ffffff;
+    color: #4a5568;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .btn-idioma.activo {
+    background: #2980b9;
+    border-color: #2980b9;
+    color: #ffffff;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: #a0aec0;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="https://lh3.googleusercontent.com/d/11SG1HLYX58N-KiHHQVfbaXmQdaysiwwB" alt="Logo">
+  <h1 id="titulo-h1">Enlaces de la Guía</h1>
+  <p class="subtitulo" id="texto-subtitulo">Todos los enlaces de los códigos QR de la guía de A Casa da Ponte, en un solo sitio. Toca una categoría para desplegarla.</p>
+
+  <div class="selector-idioma" id="selector-idioma">
+    <button class="btn-idioma" data-lang="es">ES</button>
+    <button class="btn-idioma" data-lang="gl">GL</button>
+    <button class="btn-idioma" data-lang="en">EN</button>
+  </div>
+
+  <div id="acordeon"></div>
+
+  <footer>A Casa da Ponte · Ponte Maceira, Negreira</footer>
+</div>
+
+<script>
+const DATOS = [
+  {
+    categoria: "Rutas en coche",
+    key: "rutasCoche",
+    items: [
+      { n: "Ruta 1 · Verdes - O Roncudo", l: "https://maps.app.goo.gl/ydiB95HemfMHR1Y36" },
+      { n: "Ruta 2 · Brandomil - Laxe", l: "https://maps.app.goo.gl/QPkjAkJCEYDxvoiDA" },
+      { n: "Ruta 3 · Muxía - Camelle", l: "https://maps.app.goo.gl/qHA8zGB3gqHDrUsx8" },
+      { n: "Ruta 4 · Fisterra - Muros", l: "https://maps.app.goo.gl/g31tPq1FrK8itLMG9" },
+      { n: "Ruta 5 · Negreira - Central do Tambre", l: "https://maps.app.goo.gl/JQX8jbaqrA7KpRcg8" },
+      { n: "Ruta 6 · Noia - Ribeira", l: "https://maps.app.goo.gl/4mFoY2jnPJPXmHaH8" },
+      { n: "Ruta 7 · Vilagarcía - Fervenza do Barosa", l: "https://maps.app.goo.gl/EgMXfTH1Vypjwa9h7" },
+      { n: "Ruta 8 · Xirimbao - Fervenza da Toxa", l: "https://maps.app.goo.gl/i9aSUAnU33cQXBAK9" }
+    ]
+  },
+  {
+    categoria: "Rutas a pie",
+    key: "rutasPie",
+    items: [
+      { n: "Ruta do Tambre", l: "https://terrasdecompostela.org/recursos/ruta-do-tambre/" },
+      { n: "Ruta dos tres pazos", l: "https://terrasdecompostela.org/recursos/ruta-dos-tres-pazos/" },
+      { n: "Más rutas", l: "https://terrasdecompostela.org/destino-fluvial/sendas-fluviais/" },
+      { n: "Áreas recreativas", l: "https://terrasdecompostela.org/destino-fluvial/zonas-recreativas-bano/" }
+    ]
+  },
+  {
+    categoria: "Desayunar",
+    key: "desayunar",
+    items: [
+      { n: "O Recuncho das Canaria", g: "Negreira", l: "https://maps.app.goo.gl/Ah8LGTN4DjskedUi8" },
+      { n: "Cafetería Cervecería Abrente", g: "Negreira", l: "https://maps.app.goo.gl/wi3RRuBJLtfPWeqE8" },
+      { n: "Trisquel", g: "Negreira", l: "https://maps.app.goo.gl/A1QCGyE42MaHVwap7" },
+      { n: "Xallas Café", g: "Negreira", l: "https://maps.app.goo.gl/T6HCE6n14Kzg2uaZ9" }
+    ]
+  },
+  {
+    categoria: "Comer y beber",
+    key: "comerBeber",
+    items: [
+      { n: "Café Bar Casa Rufino", l: "https://maps.app.goo.gl/mpsgJ3Sn6A3gp9PV7" },
+      { n: "Restaurante San Lorenzo", l: "https://maps.app.goo.gl/9YCj8N6YpNigBuDa9" },
+      { n: "A de Totó", l: "https://maps.app.goo.gl/gqiLaiKqeGxxaYrZA" },
+      { n: "Café Bar Imperial", g: "Negreira", l: "https://maps.app.goo.gl/V91XeS3259wz1izu9" },
+      { n: "Restaurante Pizzería Milio", g: "Negreira", l: "https://maps.app.goo.gl/FxXZ2tNGqCNjDwbS7" },
+      { n: "O Cotón", g: "Negreira", l: "https://maps.app.goo.gl/ViNJfFBjdRbPBeu26" },
+      { n: "Restaurante Casa Barqueiro", g: "Negreira", l: "https://maps.app.goo.gl/KXk3f7GTVdvrxtpw6" },
+      { n: "Cervecería A Vila", g: "Negreira", l: "https://maps.app.goo.gl/774CatFkCaQsGsW4A" },
+      { n: "Bar Oriel", g: "Negreira", l: "https://maps.app.goo.gl/NHZi5G7bj8q1L95v9" },
+      { n: "Hostal La Mezquita", g: "Negreira", l: "https://maps.app.goo.gl/zBMs8DhHiiYx783k7" },
+      { n: "Cafetería Milos", g: "Negreira", l: "https://maps.app.goo.gl/sJH1xzBYCykCPJ6M8" },
+      { n: "Hamburguesería Macburger", g: "Negreira", l: "https://maps.app.goo.gl/vXWPZUaJgSUwxXNeA" },
+      { n: "Restaurante O Arranca", g: "Ordoeste, A Baña", l: "https://maps.app.goo.gl/ZFbEmbAMSYvwsnGi8" },
+      { n: "Restaurante Casa Salvador", g: "Seoane, A Baña", l: "https://maps.app.goo.gl/gG8mNKNkLTAE49RE6" },
+      { n: "Mesón San Amaro", g: "Los Ángeles, Brión", l: "https://maps.app.goo.gl/1E1qdyxRUmSWTyKw8" },
+      { n: "Restaurante Asador Abelleira", g: "Urb. Agro Novo, Brión", l: "https://maps.app.goo.gl/W7pUZiPfd3urFVko9" },
+      { n: "Taberna Casa Abelleira", g: "Bertamirans", l: "https://maps.app.goo.gl/PNXCeT8y2aT8EMfi8" },
+      { n: "Onde Keiras", g: "Bertamirans", l: "https://maps.app.goo.gl/WqwuroEkYM7VCL5j7" },
+      { n: "Restaurante A Nave de Vidán", g: "Vidán, Santiago de Compostela", l: "https://maps.app.goo.gl/SiQYBP55mXoU7aJv5" },
+      { n: "Pub Momo", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/vyckPtM6g1GiLVm99" },
+      { n: "Mercado La Galiciana", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/Euz2g3cg7EeeK2YP6" },
+      { n: "A Gramola", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/JXjLdUidhHmqPJ9u7" },
+      { n: "Mercado de Abastos", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/xejnSn2nq99TZvU68" },
+      { n: "Sushi Fafa (Buffet)", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/hP1vPj4fuLDvgnL99" },
+      { n: "Casa de Xantar O Dezaseis", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/TAEf7itV6o81JNqw9" },
+      { n: "Mesón O Eixo", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/EVwzWfCA9DdAhTLA9" },
+      { n: "Parrillada O Establo", g: "Laraño, Santiago de Compostela", l: "https://maps.app.goo.gl/vCNcFQ9cFCftDAKeA" },
+      { n: "Restaurante Leandro", g: "Santa Comba", l: "https://maps.app.goo.gl/QziLWzqdYHMbJXQdA" },
+      { n: "Casa Aurelio", g: "Santa Comba", l: "https://maps.app.goo.gl/GroYD4EFxrfvAntW7" },
+      { n: "D'Mara", g: "Santa Comba", l: "https://maps.app.goo.gl/tbeTBx4fZdKnag5z6" },
+      { n: "Bar y Pensión Rústica As Pías", g: "Olveiroa", l: "https://maps.app.goo.gl/9PCWz7eGik85cXTMA" }
+    ]
+  },
+  {
+    categoria: "Comprar",
+    key: "comprar",
+    items: [
+      { n: "CLUN Tenda", l: "https://maps.app.goo.gl/7xaFp96zmxJ7b8sr7" },
+      { n: "Supermercados Gadis", g: "Negreira", l: "https://maps.app.goo.gl/pJXV6DNkry9Djw2d6" },
+      { n: "Eroski Center", g: "Negreira", l: "https://maps.app.goo.gl/6EpPTijAuRjeZTQ9A" },
+      { n: "Galuresa / Claudio Express", g: "Negreira", l: "https://maps.app.goo.gl/BEBHYV8krwuLtZ9L8" },
+      { n: "Carnicería Suso", g: "Negreira", l: "https://maps.app.goo.gl/PMP6dZURBqmPdGEVA" },
+      { n: "Mercadona", g: "Bertamirans", l: "https://maps.app.goo.gl/Ej3EsybWpZGWmqmQ8" }
+    ]
+  },
+  {
+    categoria: "Salud",
+    key: "salud",
+    items: [
+      { n: "Farmacia Isolina Lago Rial", l: "https://maps.app.goo.gl/wrutPgKBL9FhPDKJ9" },
+      { n: "Centro de Salud de Negreira", g: "Negreira", l: "https://maps.app.goo.gl/4cDNsj7yfFKWGxJE6" }
+    ]
+  },
+  {
+    categoria: "Otros",
+    key: "otros",
+    items: [
+      { n: "Lavandería Autoservicio Caballo Blanco", g: "Negreira", l: "https://maps.app.goo.gl/1rmzVe3iYiweVzqC8" },
+      { n: "Plenoil Autoservicio 24H", g: "Santiago de Compostela", l: "https://maps.app.goo.gl/zMhPSuBr8qbE1pzu7" }
+    ]
+  }
+];
+
+const TRADUCCIONES = {
+  es: {
+    titulo: "Enlaces · A Casa da Ponte",
+    h1: "Enlaces de la Guía",
+    subtitulo: "Todos los enlaces de los códigos QR de la guía de A Casa da Ponte, en un solo sitio. Toca una categoría para desplegarla.",
+    btnIr: "Ir",
+    palabraRuta: "Ruta",
+    categorias: {
+      rutasCoche: "Rutas en coche",
+      rutasPie: "Rutas a pie",
+      desayunar: "Desayunar",
+      comerBeber: "Comer y beber",
+      comprar: "Comprar",
+      salud: "Salud",
+      otros: "Otros"
+    }
+  },
+  gl: {
+    titulo: "Ligazóns · A Casa da Ponte",
+    h1: "Ligazóns da Guía",
+    subtitulo: "Todas as ligazóns dos códigos QR da guía de A Casa da Ponte, nun só sitio. Toca unha categoría para despregala.",
+    btnIr: "Ir",
+    palabraRuta: "Ruta",
+    categorias: {
+      rutasCoche: "Rutas en coche",
+      rutasPie: "Rutas a pé",
+      desayunar: "Almorzar",
+      comerBeber: "Comer e beber",
+      comprar: "Mercar",
+      salud: "Saúde",
+      otros: "Outros"
+    }
+  },
+  en: {
+    titulo: "Links · A Casa da Ponte",
+    h1: "Guide Links",
+    subtitulo: "All the links from A Casa da Ponte's guide QR codes, in one place. Tap a category to expand it.",
+    btnIr: "Go",
+    palabraRuta: "Route",
+    categorias: {
+      rutasCoche: "Driving routes",
+      rutasPie: "Walking routes",
+      desayunar: "Breakfast",
+      comerBeber: "Eating & drinking",
+      comprar: "Shopping",
+      salud: "Health",
+      otros: "Other"
+    }
+  }
+};
+
+const cont = document.getElementById('acordeon');
+let idiomaActual = 'es';
+
+function renderizar(idioma) {
+  const t = TRADUCCIONES[idioma];
+
+  document.title = t.titulo;
+  document.getElementById('titulo-h1').textContent = t.h1;
+  document.getElementById('texto-subtitulo').textContent = t.subtitulo;
+
+  document.querySelectorAll('.btn-idioma').forEach(btn => {
+    btn.classList.toggle('activo', btn.dataset.lang === idioma);
+  });
+
+  // Guardamos qué categorías estaban abiertas para conservarlo al cambiar de idioma
+  const abiertas = Array.from(cont.querySelectorAll('.categoria')).map(c => c.classList.contains('abierta'));
+
+  cont.innerHTML = '';
+
+  DATOS.forEach((cat, idx) => {
+    const div = document.createElement('div');
+    div.className = 'categoria';
+    if (abiertas.length ? abiertas[idx] : idx === 0) div.classList.add('abierta');
+
+    const esCategoriaDeRutas = cat.key === 'rutasCoche' || cat.key === 'rutasPie';
+
+    const itemsHtml = cat.items.map(it => {
+      const nombreMostrado = esCategoriaDeRutas
+        ? it.n.replace(/^Ruta\b/, t.palabraRuta)
+        : it.n;
+      return `
+      <div class="item">
+        <div class="info-item">
+          <div class="nombre-item">${nombreMostrado}</div>
+          ${it.g ? `<div class="lugar-item">${it.g}</div>` : ''}
+        </div>
+        <a class="btn-ir" href="${it.l}" target="_blank" rel="noopener">${t.btnIr}</a>
+      </div>
+    `;
+    }).join('');
+
+    div.innerHTML = `
+      <div class="cabecera-cat">
+        <span>${t.categorias[cat.key]}</span>
+        <span class="icono">▼</span>
+      </div>
+      <div class="lista">${itemsHtml}</div>
+    `;
+
+    div.querySelector('.cabecera-cat').addEventListener('click', () => {
+      div.classList.toggle('abierta');
+    });
+
+    cont.appendChild(div);
+  });
+}
+
+document.querySelectorAll('.btn-idioma').forEach(btn => {
+  btn.addEventListener('click', () => {
+    idiomaActual = btn.dataset.lang;
+    renderizar(idiomaActual);
+  });
+});
+
+renderizar(idiomaActual);
+
+</script>
+</body>
+</html>
